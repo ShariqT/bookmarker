@@ -1,0 +1,9 @@
+{
+	"name":"bookmarker",
+	"dependencies":{
+		"jquery": "*",
+		"ember": "*",
+		"bootstrap": "*"
+	},
+	"private":true
+}

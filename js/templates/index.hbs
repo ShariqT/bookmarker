@@ -1,0 +1,27 @@
+<div clas="row">
+	<div class="col-lg-6">
+		<h2>Your Bookmark Files</h2>
+		<ul class="list-group">
+			<li class="list-group-item">My Bookmarks | <a href="">Edit</a> | <a href="">Delete</a>
+				<p>dfsadfsdf</p>
+			</li>
+			<li class="list-group-item">Sample Bookmarks | <a href="">Edit</a> | <a href="">Delete</a>
+				<p>ndf  sdfdfsd sdflksdjfwoefsd</p>
+			</li>
+		</ul>
+	</div>
+	<div class="col-lg-6">
+		<h2>Create New Bookmark File</h2>
+		<form role="form">
+			<div class="form-group">
+				<label class="control-label">Title</label>
+				<input type="text" id="btitle" class="form-control" placeholder="Bookmark file" />
+			</div>
+			<div class="form-group">
+				<label>Description</label>
+				<textarea class="form-control" id="bdesc" placeholder="Enter a short description"></textarea>
+			</div>
+			<button {{action 'create'}} class="btn btn-primary">Create Bookmark</button>	
+		</form>
+	</div>
+</div>
