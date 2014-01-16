@@ -11,9 +11,9 @@ App.BookmarkFile = Ember.Object.extend({
 	
 });
 App.BookmarkFile.reopenClass({
-	newFile: function(){
+	newFile: function(btitle, bdesc){
 		var bfile;
-		return $.post('/create/new', function(data){
+		return $.post('/create/new',{}, function(data){
 			return App.BookmarkFile.create(data);
 		});
 	},
@@ -49,7 +49,8 @@ App.LinkAddRoute = Ember.Route.extend({
 App.IndexController = Ember.Controller.extend({
 	actions:{
 		create: function(){
-			var bfile = App.BookmarkFile.newFile($('#btitle').val(), $('#bdesc').val());			
+			var btitle = encodeURI($('#btitle').val()).replace(/%20/g, '-').replace(/'|[,]/g, '');
+			var bfile = App.BookmarkFile.newFile(btitle, $('#bdesc').val());			
 			this.transitionToRoute('link.add', bfile);
 		}
 	}

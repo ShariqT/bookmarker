@@ -4,6 +4,8 @@ session_cache_limiter(false);
 session_start();
 
 require 'vendor/autoload.php';
+
+
 $app = new \Slim\Slim(array(
 	'template.path'=> './templates'
 	));
@@ -22,18 +24,22 @@ $app->get('/', function() use ($app){
 $app->post('/login', function() use($app){
 	$username = $_POST['username'];
 	$password = $_POST['password'];
-	if(file_exists('/user/user.json') ){
-		$handle = fopen('/user/user.json', 'w+');
-	}else{
+
+	if($username == '' || $password == ''){
+		$app->render('login.php', array('err'=>'You need to enter both a username and password.'));
+		exit();
+	}
+
+	if(!file_exists('./user/user.json') ){
 		$app->error('There is no user.json file. Please create one.');
 	}
 
-	$content = json_decode(fread($handle, filesize('/user/user.json')) );
-	if($username == $content['username'] && $password == $content['password']){
+	$content = json_decode(file_get_contents('./user/user.json')) ;
+	if($username == $content->username && $password == $content->password){
 		$_SESSION['username'] = $username;
 		$app->redirect('/bmarks');
 	}else{
-		$app->render('login.php', array('err', 'Username/Password was incorrect.'));
+		$app->render('login.php', array('err'=> 'Username/Password was incorrect.'));
 	}
 });
 
