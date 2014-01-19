@@ -49,23 +49,97 @@ $app->get('/bmarks', function() use ($app){
 });
 
 $app->post('/create/new', function() use ($app){
+	$title = $_POST['title'];
+	$desc = $_POST['desc'];
+	$slug = $_POST['slug'];
 	$response = $app->response();
 	$response['Content-Type'] = 'application/json';
-	$response->setBody(json_encode(array('name'=>'sdfas', 'desc'=>'sdfsd', 'links'=>array())));
+	$content = json_encode(array('name'=>$title, 'desc'=>$desc, 'slug'=>$slug, 'links'=>array()));
+	$handle = fopen("./bjson/{$slug}.json", "x+");
+	fwrite($handle, $content);
+	fclose($handle);
+	$response->setBody($content);
 
 });
 
-$app->get('/bookmark/:name', function() use ($app){
+$app->get('/bookmark/:slug', function($slug) use ($app){
 	$response = $app->response();
 	$response['Content-Type'] = 'application/json';
-	$response->setBody(json_encode(array('name'=>'sdfas', 'desc'=>'sdfsd', 'link'=>array())));
+	try{
+		$contents = file_get_contents("./bjson/{$slug}.json" );
+		$response->setBody($contents);
+
+	}catch(Exception $e){
+		$response->setBody(json_encode(array('error'=>'There was no file found')));
+	}
+
 
 });
 
 
+$app->post('/bookmark/save', function() use ($app){
+	$response = $app->response();
+	$response['Content-Type'] = 'application/json';
+	$linksToAdd = array();
+	try{
+		foreach($_POST['links'] as $link){
+			array_push($linksToAdd,$link);
+		}
+		$handle = fopen("./bjson/{$_POST['slug']}.json", 'w');
+		$dataToWrite = json_encode(array('slug'=>$_POST['slug'], 
+										'name'=>$_POST['name'],
+										 'desc' => $_POST['desc'],
+										 'links' => $linksToAdd));
+		
+		fwrite($handle, $dataToWrite);
+		fclose($handle);
+		$response->setBody(json_encode(array('success'=>true)));
+	}catch(Exception $e){
+		$response->setBody(json_encode(array('err'=>true)));
+	}
+});
+
+$app->get('/bookmark/get/all', function() use ($app){
+	$response = $app->response();
+	$response['Content-Type'] = 'application/json';
+	$bookmark_dir = scandir('./bjson');
+	$all_bookmarks = array();
+	foreach($bookmark_dir as $b){
+		if($b !== '.' && $b !== '..'){
+			$c = json_decode(file_get_contents('./bjson/' . $b));
+			array_push($all_bookmarks, $c);
+		}
+	}
+
+	$response->setBody(json_encode($all_bookmarks));
+});
+
+$app->post('/bookmark/delete', function() use ($app){
+	$response = $app->response();
+	$response['Content-Type'] = 'application/json';
+	try{
+		unlink("./bjson/{$_POST['slug']}.json");
+		$response->setBody(json_encode(array('success'=>true)));
+	}catch(Exception $e){
+		$response->setBody(json_encode(array('err'=>true)));
+	}
+	$response->setBody(json_encode(array('success' => true)));
+});
+
+
+$app->get('/export/:slug', function($slug) use ($app){
+	$response = $app->response();
+	$response['Content-Type'] = 'application/octet-stream';
+	$response['Content-Transfer-Encoding'] ='Binary';
+	$response['Content-disposition'] = 'attachment;filename="'. $slug .'.json"';
+	$response->setBody(readfile("./bjson/{$slug}.json"));
+});
 
 
 $app->run();
+
+
+
 
 
 ?>

@@ -1,18 +1,38 @@
+<a {{action 'saveChanges'}}>Save Changes</a> <a {{action 'clearChanges'}}>Clear Changes</a>
 <div class="row">
 	<div class="col-lg-12">
 		<h2>Edit {{name}}</h2>
-		<form role="form">
-			<div class="form-group">
-				<input type="text" class="form-control col-lg-12" placeholder="Copy the url to add here: http://bookmark-url" />
+		{{#view App.AddALinkView}}
+		<form role="form" class="form-inline">
+			<div class="form-group col-lg-8">
+			
+				<input type="text" id="url" class="form-control" placeholder="Copy the url to add here: http://bookmark-url" />
 			</div>
+			<button class="btn btn-default" type="submit">Add</button>
 		</form>
+		{{/view}}
 	</div>
 </div>
 <hr />
 <div class="row">
 	<div class="col-lg-12">
+		{{#if links}}
 		<ul>
-			<li>Link Name</li>
+			{{#each l in links itemController="url"}}
+
+				{{#if editing}}
+					<li>{{view App.UrlEditView value=content class="form-control col-xs-1" action="updateUrl"}}</li>
+				{{else}}	
+					<li><p {{action 'editlink' on='click'}}>{{content}}</p> <a class='dellink' {{action 'deleteLink' content }}>Delete</a>
+					
+					</li>
+				{{/if}}
+			
+			{{/each}}
 		</ul>
+		{{/if}}
+		{{#unless links}} 
+			<p>No links yet!</p>
+		{{/unless}}
 	</div>
 </div>

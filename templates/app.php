@@ -8,6 +8,7 @@
 	<body>
 		
 		<script src="js/jquery/jquery.js"></script>
+		<script type="text/javascript" src="js/bootstrap/dist/js/bootstrap.js"></script>
 		<script src="js/handlebars/handlebars.js"></script>
 		<script src="js/ember/ember.js"></script>
 		<script src="js/templates.js"></script>

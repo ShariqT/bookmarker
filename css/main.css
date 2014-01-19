@@ -18,3 +18,7 @@
 .masthead h1 a:visited{
 	color:white;
 }
+
+.dellink{
+	cursor:pointer;
+}

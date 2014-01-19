@@ -1,14 +1,17 @@
 <div clas="row">
 	<div class="col-lg-6">
 		<h2>Your Bookmark Files</h2>
+		<div class="alert alert-info"></div>
+		{{#if bmarks}}
 		<ul class="list-group">
-			<li class="list-group-item">My Bookmarks | <a href="">Edit</a> | <a href="">Delete</a>
-				<p>dfsadfsdf</p>
+			{{#each b in bmarks}}
+			<li class="list-group-item">{{b.name}} | {{#link-to 'link.add' b}}Edit{{/link-to}} | <a {{action 'delete' b}}>Delete</a> | <a href="/export/{{unbound b.slug}}">Download</a>
+				<p>{{b.desc}}</p>
 			</li>
-			<li class="list-group-item">Sample Bookmarks | <a href="">Edit</a> | <a href="">Delete</a>
-				<p>ndf  sdfdfsd sdflksdjfwoefsd</p>
-			</li>
+			
+			{{/each}}
 		</ul>
+		{{/if}}
 	</div>
 	<div class="col-lg-6">
 		<h2>Create New Bookmark File</h2>
@@ -25,3 +28,21 @@
 		</form>
 	</div>
 </div>
+
+<div class="modal fade" id="confirm">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Confirm Delete</h4>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete this bookmark file?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" {{action 'confirmDelete'}} id="confirmDelete">Delete</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
