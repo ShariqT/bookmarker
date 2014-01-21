@@ -6,6 +6,10 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'jyggen\\Curl' => array($vendorDir . '/jyggen/curl/lib'),
+    'Symfony\\Component\\Yaml\\' => array($vendorDir . '/symfony/yaml'),
+    'Symfony\\Component\\HttpFoundation\\' => array($vendorDir . '/symfony/http-foundation'),
+    'Sunra\\PhpSimple\\HtmlDomParser' => array($vendorDir . '/sunra/php-simple-html-dom-parser/Src'),
     'Slim' => array($vendorDir . '/slim/slim'),
-    'Bookmark//' => array($baseDir . '/src'),
+    'Bookmark' => array($baseDir . '/src'),
 );

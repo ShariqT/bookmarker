@@ -128,11 +128,16 @@ $app->post('/bookmark/delete', function() use ($app){
 
 
 $app->get('/export/:slug', function($slug) use ($app){
+	$exporter = new \Bookmark\Export();
+	$exporter->readFile("./bjson/{$slug}.json");
+	$exporter->crawlLinks();
+	$exporter->transformFile();
 	$response = $app->response();
 	$response['Content-Type'] = 'application/octet-stream';
 	$response['Content-Transfer-Encoding'] ='Binary';
-	$response['Content-disposition'] = 'attachment;filename="'. $slug .'.json"';
-	$response->setBody(readfile("./bjson/{$slug}.json"));
+	$response['Content-disposition'] = 'attachment;filename="'. $slug .'.html"';
+	echo $exporter->getExportedContent();
+
 });
 
 
