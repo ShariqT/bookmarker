@@ -45,17 +45,56 @@ class Export
 			$this->link_array[$i]['url'] = $link;
 			$title = $dom->find('title'); 
 			$this->link_array[$i]['title'] = trim($title[0]->plaintext);
-
-			$icon = $dom->find("link[rel='shortcut icon']");
-			if(count($icon) >= 1){
-			$this->link_array[$i]['icon'] = $icon[0]->attr['href'];
-			}else{
-				$this->link_array[$i]['icon'] = '';
-			}
+			$this->getFavicon($dom, $i);
+			
 			$i++;
 		}
 
 		return;
+	}
+
+
+
+	protected function getFavicon($dom, $i){
+		$icon = $dom->find("link[rel='shortcut icon']");
+			if(count($icon) >= 1){
+				$this->link_array[$i]['icon'] = $icon[0]->attr['href'];
+			}else{
+				$icon = $dom->find("meta[itemprop='image']");
+				if(count($icon) >= 1){
+					$this->link_array[$i]['icon'] = $icon[0]->attr['content'];
+				}else{
+				$this->link_array[$i]['icon'] = '';
+				}
+			}
+
+		$this->link_array[$i]['icon'] = $this->convertToDataURI($this->link_array[$i]);
+	}
+
+
+	private function convertToDataURI($link){
+		if($link['icon'] == ''){
+			return;
+		}
+
+		$dataURI = '';
+		$filetype = strtolower(substr($link['icon'], -3));
+		$filetype_mimetypes = array(
+				'ico' => 'image/x-icon',
+				'png' => 'image/png',
+				'gif' => 'image/gif'
+			);
+		$dataURI = $filetype_mimetypes[$filetype] . ";base64,";
+
+		//check to see if it is a relative path or an actual url
+		if(!preg_match('/http\:\/\//', $link['icon']) ){
+			$link['icon'] = $link['url'] . $link['icon'];
+		}
+
+		$encodedData = base64_encode(file_get_contents($link['icon']));
+		
+		return $dataURI . $encodedData;
+
 	}
 
 
